@@ -1,0 +1,177 @@
+# common pymol commands
+# how i make figures
+# last update: mkh 091219
+
+### 
+
+# How to read this:
+# a "#" indicates a comment in the script and is not executed by the program
+# everything else is a command that will be executed if you copy this into pymol
+# schedule a time with me if you wish to ask more or want help.
+
+###
+
+# the goal of this is to teach people how to start creating scripts that can be run to produce high quality and informative pymol images
+# scripting allows for greater consistency and speed when making figures, and saves you from "reinventing the wheel" every time you make a figure
+# much like in computer science, the goal is often to write as little as possible, and scripting for pymol can allow you to do that
+# I can often copy and paste scripts for one figure and use them for the next and only have to change a few lines
+# this is much faster than clicking around the program trying to get things right 
+# additionally, scripting allows you to "go back" which cannot be done when using the GUI. You can comment out (using "#") command you want to save for later
+
+###
+
+# to make a script, open your text editor. 
+# PCs and MACs typically have these built in, but feel free to use your favorite
+# i use sublime, and you could also use your IDE (like pycharm or eclipse) if you want to sync to Git or other version control software (highly recommended!!)
+# to save a script, save the file and make the file extension ".pml", you will have to manually type this is because it is a non standard file type, a "pymol file"
+# to generate your resultant image, click the script and open it in pymol or drag it onto the icon. 
+# this will run your script and produce the image you have constructed using commands. 
+# as you modify and change things, make a note and change your script. Often you might wish to "go back" which is something you can do by rerunning your original script. This is not possible when simply using the GUI and clicking. 
+# equally important to generating an image is saying what the image is for. 
+# somewhere in your script (or throughout) you should drop comments that say what you are doing so that you can remember later or someone else can interpret your work
+
+###
+
+# we will now begin to create a script and implement a few simple commands
+# to start, clear your canvas, set background color, set color space
+	#remember that commands are not preceded by a "#" this is a carry over from the Python language
+
+delete all
+bg_color white 		
+space CMYK 	
+
+# bg = background, white is what you should do to see how it will look on paper
+# RGB is also popular, CMYK is historically the classic/required space, images look better if you do this here rather than in illustrator and it is much easier to do here. 
+
+###
+
+# next you will want to load ("fetch") your structure
+# here we will use 5VYA as an example
+
+fetch 5vya, async=0 # this last bit make sure the file is loaded before another action is taken
+
+###
+
+# coloring is the typical next step
+# coloring has many options 
+# you may want to color by chain or by atom or color specific residues
+# classic chain color are blue, green, red, yellow. 
+# i am partial to using marine
+# bring out you inner artist, I've done some graphic design in the past so let me know if you want hash out some ideas
+# you can check available colors here: https://pymolwiki.org/index.php/Color_Values
+# usage examples here https://pymolwiki.org/index.php/Color
+
+util.cbc 						# colors the entire structure by chain
+color cyan, chain B 			# this will color chain B cyan, color and object (what comes after "," can be changed)
+color grey95, resi 641:649		# this colors residues 641-649 grey95, a light grey
+
+###
+
+# style, there are certain things that just make images look better. 
+# often we do not care about the peptide backbone, jus the side chains
+
+set cartoon_side_chain_helper, 1 
+
+# ^^ this will hide peptide backbone sticks when you are in cartoon so that only the side chains will show if you choose to show stick (type "show st")
+
+# the standard helices are ok, but look a little sloppy
+
+set cartoon_fancy_helices, 1 
+
+# this turns on fancy helices, they generally look better
+
+###
+
+# set the view
+# you may have a great vision of what you want to share, but you need to make sure that it is clearly articulated to the viewer who does not have you knowledge
+# on the GUI use your mouse to scroll around to get the orientation 
+# zoom in and out by holding the right button on your mouse and move your mouse up and down
+# to move the entire structure in your viewer, hold command and left mouse and move however you please. 
+# to move the camera in and out of the structure to fade out the background (or not) use the scroll button on your mouse. 
+# once you have the orientation you like, SAVE IT!
+# you don't want to have to do this again, and it is the most important part of the figure. 
+# to save...
+# hit "get view" on the top right hand corner of  the GUI
+# a readout like that given below will appear in the terminal window of pymol and literally say "copy this into your script"
+# do it. 
+# if you want to save more than one view to look at the same structure from different angles, simple comment out one and copy the second view into your scipt
+# pymol reads these scripts from the top down, so whatever you have as the last view is the one that will appear when you run it. 
+
+set_view (\
+     0.614253402,    0.103485100,    0.782292247,\
+    -0.765218854,   -0.163967803,    0.622537851,\
+     0.192695200,   -0.981023192,   -0.021529211,\
+     0.000000000,    0.000000000, -422.216400146,\
+   125.686531067,  126.652099609,  134.159515381,\
+   264.532501221,  579.899353027,  -20.000000000 )
+
+###
+
+# there are also functions that allow you to create new objects, color by atom, take measurements, generate electrostatic potential maps, do structural alignments. 
+# these all have a time and place, ask me if you want to know more. 
+# i have scripts prepared that do things like color hydrophobic, hydrophilic, bulky, acidic,  basic residues so ask if you want them. 
+
+###
+
+# so now you have a script that will generate your image, how to save the image?
+# publishers have different guidelines on size and resolution, so refer to what they say
+# it is good practice to ray trace all your images with a transparent background and with at least 150 DPI
+# this can be done by hitting the "draw/ray" button on the top right of the screen and entering your parameters in the following prompts
+# if you have a slow computer and are trying to render a large structure this can take up to an hour, though generally on a decent computer it will take no longer than a few minutes. 
+# ray tracing is very expensive computationally, and currently pymol only supports ray tracing on CPU
+# if you are running other intensive software, like some stats packages or pro level editing software, send me your file and I will do it on mine very quickly
+###
+
+# now i will run through some selection algebra that is useful if you want to only select and show certain residues, chains, etc
+# atoms often have funny names in pymol, but clicking on them will tell you their name, and once you know that you can treat that just as you would a residue except you would use "ele" instead of "resi"
+
+# selects atoms that are part of chain A, but not residue number 125.
+select chain A and (not resi 125)
+
+# The following two selections are equivalent, 
+select (name CB or name CG1 or name CG2) and chain A
+
+# select helices
+select ss 'H'
+
+# select anything shown as a line
+select rep lines
+
+# select anything colored blue
+select color blue
+
+# select the 1st arginine
+select first resn ARG
+
+# select a chain
+select chain A
+
+# hide an object
+disable name_of_object
+
+# show certain representation of something like a chain...these are the most common
+# you may see abbreviations online like "st" (stick) "sp" (sphere)
+# i tend to spell things out for easier readability by humans
+show cartoon, chain A
+show stick, chain A
+show sphere, chain A
+
+# obviously this is not comprehensive, but it should get you started. 
+
+###
+
+# say you are only interested in showing a specific set of residues
+# on hsp104 this could be the middle domain, as an example
+# removing the rest of the structure often can lead to greter clarity and the elimination of visual clutter.
+# this command will extract the middle domain (or whatever) to a new object of your name
+# following this, you will need to make sure the correct objects are enabled and disabled
+# note that this will not delete the rest of the structure, it simple pulls out your region of interest
+
+extract name_of_new_object, resi 411:800 # cant remember where the md ends exactly...
+
+
+
+
+
+
+
