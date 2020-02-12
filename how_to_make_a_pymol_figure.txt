@@ -1,6 +1,6 @@
 # common pymol commands
 # how i make figures
-# last update: mkh 091219
+# last update: mkh 021120
 
 ### 
 
