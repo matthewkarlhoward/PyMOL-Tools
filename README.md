@@ -1,4 +1,4 @@
-# PyMOL Tools
+# PyMOL-Tools
 
 <a href="https://pymol.org/2/" target="_blank" style="text-decoration: underline; color: blue;">PyMOL</a> is an incredible powerful program for the visualization of biochemical structures. Throughout the years, I have picked up many tips and tricks that I hope may be of use to others as they navigate this software. While I actively use srcipts in this repository, I do not always upload the "final" versions of my scripts here. If you have questions about anything, please do not hesitate to post an issue or shoot me a message. 
 
